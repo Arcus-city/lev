@@ -1,11 +1,11 @@
-def optimimist_weighted_average(optimist_range, skill_range):
-    optimimist_weighted_sum = sum([optimist_range * skill_range for optimist_range, skill_range in zip(optimist_range, skill_range)])
+def optimist_weighted_average(optimist_range, skill_range):
+    optimist_weighted_sum = sum([optimist_range * skill_range for optimist_range, skill_range in zip(optimist_range, skill_range)])
     total_coefficients = sum(skill_range)
 
-    optimimist_weighted_average = optimimist_weighted_sum / total_coefficients
-    return optimimist_weighted_average
+    optimist_weighted_average = optimist_weighted_sum / total_coefficients
+    return optimist_weighted_average
 
-optimimist_average_value = optimimist_weighted_average(optimist_range, skill_range)
+optimist_average_value = optimist_weighted_average(optimist_range, skill_range)
 
 def pessimist_weighted_average(pessimist_range, skill_range):
     pessimist_weighted_sum = sum([pessimist_range * skill_range for pessimist_range, skill_range in zip(pessimist_range, skill_range)])
@@ -25,7 +25,7 @@ def realist_weighted_average(realist_range, skill_range):
 
 realist_average_value = realist_weighted_average(realist_range, skill_range)
 
-expected_time = (optimimist_average_value + 4 * realist_average_value + pessimist_average_value) / 6
+expected_time = (optimist_average_value + 4 * realist_average_value + pessimist_average_value) / 6
 
 optimist_range = [4, 6, 7, 6, 2, 10]
 pessimist_range = [10, 12, 10, 9, 3, 15]
@@ -33,7 +33,7 @@ realist_range = [6, 8, 8, 8, 2, 12]
 skill_range = [0.7, 0.9, 0.4, 0.7, 0,5]
 
 
-print("Optimimist Average:", optimimist_average_value)
+print("Optimist Average:", optimist_average_value)
 print("Pessimist Average:", pessimist_average_value)
 print("Realist Average:", realist_average_value)
-print ("Expected Project Time:", round (expected_time,1) )
+print ("Expected Project Time:", round (expected_time,1))
