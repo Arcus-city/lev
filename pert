@@ -1,39 +1,60 @@
-def optimist_weighted_average(optimist_range, skill_range):
-    optimist_weighted_sum = sum([optimist_range * skill_range for optimist_range, skill_range in zip(optimist_range, skill_range)])
-    total_coefficients = sum(skill_range)
 
-    optimist_weighted_average = optimist_weighted_sum / total_coefficients
-    return optimist_weighted_average
+# данные времени (оптимистичный, пессиммистичный и реалистичный срок) и уровень компетентности опрашиваемого: 
+zadachi = [
+    #опрашиваемый 1:
+    {'optimistic_time': 10, 'pessimistic_time': 20, 'real_time': 15, 'skill': 0.8},
+    #опрашиваемый 2:
+    {'optimistic_time': 12, 'pessimistic_time': 16, 'real_time': 15, 'skill': 0.8},
+    #опрашиваемый 3:
+    {'optimistic_time': 14, 'pessimistic_time': 25, 'real_time': 15, 'skill': 0.8},
+    # 
+    #{'optimistic_time': , 'pessimistic_time':  , 'real_time': , 'skill': },
+]
 
-optimist_average_value = optimist_weighted_average(optimist_range, skill_range)
+optimist_range = [task['optimistic_time'] for task in zadachi if 'optimistic_time' in task]
+pessimist_range = [task['pessimistic_time'] for task in zadachi if 'pessimistic_time' in task]
+realist_range = [task['real_time'] for task in zadachi if 'real_time' in task]
+skill_range = [task['skill'] for task in zadachi if 'skill' in task]
 
-def pessimist_weighted_average(pessimist_range, skill_range):
-    pessimist_weighted_sum = sum([pessimist_range * skill_range for pessimist_range, skill_range in zip(pessimist_range, skill_range)])
-    total_coefficients = sum(skill_range)
+if sum(skill_range) == 0:
+    print('Ошибка! Деление на 0')
 
-    pessimist_weighted_average = pessimist_weighted_sum / total_coefficients
-    return pessimist_weighted_average
+else:
 
-pessimist_average_value = pessimist_weighted_average(pessimist_range, skill_range)
+    def optimist_weighted_average(optimist_range, skill_range):
+        optimist_weighted_sum = sum([optimist_range * skill_range for optimist_range, skill_range in zip(optimist_range, skill_range)])
+        total_coefficients = sum(skill_range)
+        
+        optimist_weighted_average = optimist_weighted_sum / total_coefficients
+    
+        return optimist_weighted_average
 
-def realist_weighted_average(realist_range, skill_range):
-    realist_weighted_sum = sum([realist_range * skill_range for realist_range, skill_range in zip(realist_range, skill_range)])
-    total_coefficients = sum(skill_range)
+    optimist_average_value = optimist_weighted_average(optimist_range, skill_range)
+
+    def pessimist_weighted_average(pessimist_range, skill_range):
+        pessimist_weighted_sum = sum([pessimist_range * skill_range for pessimist_range, skill_range in zip(pessimist_range, skill_range)])
+        total_coefficients = sum(skill_range)
+    
+        pessimist_weighted_average = pessimist_weighted_sum / total_coefficients
+    
+        return pessimist_weighted_average
+
+    pessimist_average_value = pessimist_weighted_average(pessimist_range, skill_range)
+
+    def realist_weighted_average(realist_range, skill_range):
+        realist_weighted_sum = sum([realist_range * skill_range for realist_range, skill_range in zip(realist_range, skill_range)])
+        total_coefficients = sum(skill_range)
+    
   
-    realist_weighted_average = realist_weighted_sum / total_coefficients
-    return realist_weighted_average
+        realist_weighted_average = realist_weighted_sum / total_coefficients
+        return realist_weighted_average
 
-realist_average_value = realist_weighted_average(realist_range, skill_range)
+    realist_average_value = realist_weighted_average(realist_range, skill_range)
 
-expected_time = (optimist_average_value + 4 * realist_average_value + pessimist_average_value) / 6
+    expected_time = (optimist_average_value + 4 * realist_average_value + pessimist_average_value) / 6
 
-optimist_range = [4, 6, 7, 6, 2, 10]
-pessimist_range = [10, 12, 10, 9, 3, 15]
-realist_range = [6, 8, 8, 8, 2, 12]
-skill_range = [0.7, 0.9, 0.4, 0.7, 0,5]
-
-
-print("Optimist Average:", optimist_average_value)
-print("Pessimist Average:", pessimist_average_value)
-print("Realist Average:", realist_average_value)
-print ("Expected Project Time:", round (expected_time,1))
+    print("Количество опрашиваемых:", len(realist_range))
+    print("Оптимистичное средневзвешенное:", optimist_average_value)
+    print("Пессимистичное средневзвешенное:", pessimist_average_value)
+    print("Реалистичное средневзвешенное:", realist_average_value)
+    print("Ожидаемое время прокта:", round (expected_time,1))
