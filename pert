@@ -57,4 +57,4 @@ else:
     print("Оптимистичное средневзвешенное:", optimist_average_value)
     print("Пессимистичное средневзвешенное:", pessimist_average_value)
     print("Реалистичное средневзвешенное:", realist_average_value)
-    print("Ожидаемое время прокта:", round (expected_time,1))
+    print("Ожидаемое время проекта:", round (expected_time,1))
