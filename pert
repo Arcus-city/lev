@@ -1,9 +1,9 @@
 # данные времени (оптимистичный, пессиммистичный и реалистичный срок) и уровень компетентности опрашиваемого: 
 opros = [
     #опрашиваемый 1:
-    {'optimistic_time': 2, 'real_time': 4, 'pessimistic_time': 6, 'skill': 0.7},
+    {'optimistic_time': 4, 'real_time': 5, 'pessimistic_time': 6, 'skill': 0.7},
     #опрашиваемый 2:
-    {'optimistic_time': 4, 'real_time': 6, 'pessimistic_time': 10, 'skill': 0.7},
+    {'optimistic_time': 4, 'real_time': 8, 'pessimistic_time': 10, 'skill': 0.7},
     #опрашиваемый 3:
     {'optimistic_time': 6, 'real_time': 10, 'pessimistic_time': 15,  'skill': 0.7},
     # 
@@ -16,11 +16,13 @@ pessimist_range = [task['pessimistic_time'] for task in opros if 'pessimistic_ti
 realist_range = [task['real_time'] for task in opros if 'real_time' in task]
 skill_range = [task['skill'] for task in opros if 'skill' in task]
 
+
 if all(isinstance(n, int) for n in optimist_range) and all(isinstance(n, int) for n in pessimist_range) and all(isinstance(n, int) for n in realist_range) and all(isinstance(n, float) for n in skill_range):
 
     if sum(skill_range) == 0:
         print('Ошибка! Деление на 0')
     else:
+        
 
         def optimist_weighted_average(optimist_range, skill_range):
             optimist_weighted_sum = sum([optimist_range * skill_range for optimist_range, skill_range in zip(optimist_range, skill_range)])
@@ -48,17 +50,28 @@ if all(isinstance(n, int) for n in optimist_range) and all(isinstance(n, int) fo
             return realist_weighted_average
 
         realist_average_value = realist_weighted_average(realist_range, skill_range)
+        
+       
+        skill_deviation = skill_deviation = ((max(skill_range) - min (skill_range))/max(skill_range))*100
 
         expected_time = (optimist_average_value + 4 * realist_average_value + pessimist_average_value) / 6
-
-        print("Количество опрашиваемых:", len(realist_range))
-        print("Оптимистичное средневзвешенное:", optimist_average_value)
+                           
+        
     
+                           
+        print("Количество опрашиваемых:", len(realist_range))
+        print("Отклонение уровня навыков:", round (skill_deviation), "%")
+        if skill_deviation > 50:
+            print ("Большая разница в уровне навыков опрашиваемых.Результат может быть некорректным!")
+        else:
+            print ("Данные достоверны")
+        print("Оптимистичное средневзвешенное:", optimist_average_value)
         print("Реалистичное средневзвешенное:", realist_average_value)
         print("Пессимистичное средневзвешенное:", pessimist_average_value)
         print("Ожидаемое время проекта:", round (expected_time,1))
 
 else: 
-    print ("Ошибка! Введите число")        
+    print ("Ошибка! Введите число")   
+    
         
     
