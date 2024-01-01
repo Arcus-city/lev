@@ -1,60 +1,68 @@
 
 # данные времени (оптимистичный, пессиммистичный и реалистичный срок) и уровень компетентности опрашиваемого: 
-zadachi = [
+opros = [
     #опрашиваемый 1:
-    {'optimistic_time': 10, 'pessimistic_time': 20, 'real_time': 15, 'skill': 0.8},
+    {'optimistic_time': 2, 'real_time': 4, 'pessimistic_time': 6, 'skill': 0.7},
     #опрашиваемый 2:
-    {'optimistic_time': 12, 'pessimistic_time': 16, 'real_time': 15, 'skill': 0.8},
+    {'optimistic_time': 4, 'real_time': 7, 'pessimistic_time': 10, 'skill': 0.5},
     #опрашиваемый 3:
-    {'optimistic_time': 14, 'pessimistic_time': 25, 'real_time': 15, 'skill': 0.8},
+    {'optimistic_time': 6, 'real_time': 10, 'pessimistic_time': 15,  'skill': 0.2},
     # 
-    #{'optimistic_time': , 'pessimistic_time':  , 'real_time': , 'skill': },
+    {'optimistic_time': 4, 'real_time': 9, 'pessimistic_time': 8,  'skill': 0.3},
+    
 ]
+    
+optimist_range = [task['optimistic_time'] for task in opros if 'optimistic_time' in task]
+pessimist_range = [task['pessimistic_time'] for task in opros if 'pessimistic_time' in task]
+realist_range = [task['real_time'] for task in opros if 'real_time' in task]
+skill_range = [task['skill'] for task in opros if 'skill' in task]
 
-optimist_range = [task['optimistic_time'] for task in zadachi if 'optimistic_time' in task]
-pessimist_range = [task['pessimistic_time'] for task in zadachi if 'pessimistic_time' in task]
-realist_range = [task['real_time'] for task in zadachi if 'real_time' in task]
-skill_range = [task['skill'] for task in zadachi if 'skill' in task]
+if all(isinstance(n, int) for n in optimist_range) and all(isinstance(n, int) for n in pessimist_range) and all(isinstance(n, int) for n in realist_range) and all(isinstance(n, float) for n in skill_range):
 
-if sum(skill_range) == 0:
-    print('Ошибка! Деление на 0')
+    if sum(skill_range) == 0:
+        print('Ошибка! Деление на 0')
+    else:
 
-else:
-
-    def optimist_weighted_average(optimist_range, skill_range):
-        optimist_weighted_sum = sum([optimist_range * skill_range for optimist_range, skill_range in zip(optimist_range, skill_range)])
-        total_coefficients = sum(skill_range)
+        def optimist_weighted_average(optimist_range, skill_range):
+            optimist_weighted_sum = sum([optimist_range * skill_range for optimist_range, skill_range in zip(optimist_range, skill_range)])
+            total_coefficients = sum(skill_range)
         
-        optimist_weighted_average = optimist_weighted_sum / total_coefficients
+            optimist_weighted_average = optimist_weighted_sum / total_coefficients
     
-        return optimist_weighted_average
+            return optimist_weighted_average
 
-    optimist_average_value = optimist_weighted_average(optimist_range, skill_range)
+        optimist_average_value = optimist_weighted_average(optimist_range, skill_range)
 
-    def pessimist_weighted_average(pessimist_range, skill_range):
-        pessimist_weighted_sum = sum([pessimist_range * skill_range for pessimist_range, skill_range in zip(pessimist_range, skill_range)])
-        total_coefficients = sum(skill_range)
+        def pessimist_weighted_average(pessimist_range, skill_range):
+            pessimist_weighted_sum = sum([pessimist_range * skill_range for pessimist_range, skill_range in zip(pessimist_range, skill_range)])
+            total_coefficients = sum(skill_range)
     
-        pessimist_weighted_average = pessimist_weighted_sum / total_coefficients
+            pessimist_weighted_average = pessimist_weighted_sum / total_coefficients
     
-        return pessimist_weighted_average
+            return pessimist_weighted_average
 
-    pessimist_average_value = pessimist_weighted_average(pessimist_range, skill_range)
+        pessimist_average_value = pessimist_weighted_average(pessimist_range, skill_range)
 
-    def realist_weighted_average(realist_range, skill_range):
-        realist_weighted_sum = sum([realist_range * skill_range for realist_range, skill_range in zip(realist_range, skill_range)])
-        total_coefficients = sum(skill_range)
+        def realist_weighted_average(realist_range, skill_range):
+            realist_weighted_sum = sum([realist_range * skill_range for realist_range, skill_range in zip(realist_range, skill_range)])
+            total_coefficients = sum(skill_range)
     
   
-        realist_weighted_average = realist_weighted_sum / total_coefficients
-        return realist_weighted_average
+            realist_weighted_average = realist_weighted_sum / total_coefficients
+            return realist_weighted_average
 
-    realist_average_value = realist_weighted_average(realist_range, skill_range)
+        realist_average_value = realist_weighted_average(realist_range, skill_range)
 
-    expected_time = (optimist_average_value + 4 * realist_average_value + pessimist_average_value) / 6
+        expected_time = (optimist_average_value + 4 * realist_average_value + pessimist_average_value) / 6
 
-    print("Количество опрашиваемых:", len(realist_range))
-    print("Оптимистичное средневзвешенное:", optimist_average_value)
-    print("Пессимистичное средневзвешенное:", pessimist_average_value)
-    print("Реалистичное средневзвешенное:", realist_average_value)
-    print("Ожидаемое время проекта:", round (expected_time,1))
+        print("Количество опрашиваемых:", len(realist_range))
+        print("Оптимистичное средневзвешенное:", optimist_average_value)
+    
+        print("Реалистичное средневзвешенное:", realist_average_value)
+        print("Пессимистичное средневзвешенное:", pessimist_average_value)
+        print("Ожидаемое время проекта:", round (expected_time,1))
+
+else: 
+    print ("Ошибка! Введите число")        
+        
+    
