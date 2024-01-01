@@ -1,14 +1,13 @@
-
 # данные времени (оптимистичный, пессиммистичный и реалистичный срок) и уровень компетентности опрашиваемого: 
 opros = [
     #опрашиваемый 1:
     {'optimistic_time': 2, 'real_time': 4, 'pessimistic_time': 6, 'skill': 0.7},
     #опрашиваемый 2:
-    {'optimistic_time': 4, 'real_time': 7, 'pessimistic_time': 10, 'skill': 0.5},
+    {'optimistic_time': 4, 'real_time': 6, 'pessimistic_time': 10, 'skill': 0.7},
     #опрашиваемый 3:
-    {'optimistic_time': 6, 'real_time': 10, 'pessimistic_time': 15,  'skill': 0.2},
+    {'optimistic_time': 6, 'real_time': 10, 'pessimistic_time': 15,  'skill': 0.7},
     # 
-    {'optimistic_time': 4, 'real_time': 9, 'pessimistic_time': 8,  'skill': 0.3},
+    {'optimistic_time': 10, 'real_time': 13, 'pessimistic_time': 20,  'skill': 0.7},
     
 ]
     
@@ -28,7 +27,6 @@ if all(isinstance(n, int) for n in optimist_range) and all(isinstance(n, int) fo
             total_coefficients = sum(skill_range)
         
             optimist_weighted_average = optimist_weighted_sum / total_coefficients
-    
             return optimist_weighted_average
 
         optimist_average_value = optimist_weighted_average(optimist_range, skill_range)
@@ -38,7 +36,6 @@ if all(isinstance(n, int) for n in optimist_range) and all(isinstance(n, int) fo
             total_coefficients = sum(skill_range)
     
             pessimist_weighted_average = pessimist_weighted_sum / total_coefficients
-    
             return pessimist_weighted_average
 
         pessimist_average_value = pessimist_weighted_average(pessimist_range, skill_range)
@@ -47,7 +44,6 @@ if all(isinstance(n, int) for n in optimist_range) and all(isinstance(n, int) fo
             realist_weighted_sum = sum([realist_range * skill_range for realist_range, skill_range in zip(realist_range, skill_range)])
             total_coefficients = sum(skill_range)
     
-  
             realist_weighted_average = realist_weighted_sum / total_coefficients
             return realist_weighted_average
 
