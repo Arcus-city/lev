@@ -1,14 +1,14 @@
 # данные времени (оптимистичный, пессиммистичный и реалистичный срок) и уровень компетентности опрашиваемого: 
 opros = [
     #опрашиваемый 1:
-    {'optimistic_time': 4, 'real_time': 5, 'pessimistic_time': 6, 'skill': 0.7},
+    {'optimistic_time': 2, 'real_time': 4, 'pessimistic_time': 8, 'skill': 0.2},
     #опрашиваемый 2:
-    {'optimistic_time': 4, 'real_time': 8, 'pessimistic_time': 10, 'skill': 0.7},
+    {'optimistic_time': 3, 'real_time': 5, 'pessimistic_time': 12, 'skill': 0.2},
     #опрашиваемый 3:
-    {'optimistic_time': 6, 'real_time': 10, 'pessimistic_time': 15,  'skill': 0.7},
-    # 
-    {'optimistic_time': 10, 'real_time': 13, 'pessimistic_time': 20,  'skill': 0.7},
-    
+    {'optimistic_time': 3, 'real_time': 4, 'pessimistic_time': 10,  'skill': 0.2},
+    #опрашиваемый 4: 
+    {'optimistic_time': 10, 'real_time': 15, 'pessimistic_time': 30,  'skill': 0.9},
+    #добавить опрашиваемых 
 ]
     
 optimist_range = [task['optimistic_time'] for task in opros if 'optimistic_time' in task]
@@ -61,17 +61,15 @@ if all(isinstance(n, int) for n in optimist_range) and all(isinstance(n, int) fo
                            
         print("Количество опрашиваемых:", len(realist_range))
         print("Отклонение уровня навыков:", round (skill_deviation), "%")
-        if skill_deviation > 50:
+        if skill_deviation > 60:
             print ("Большая разница в уровне навыков опрашиваемых.Результат может быть некорректным!")
         else:
             print ("Данные достоверны")
-        print("Оптимистичное средневзвешенное:", optimist_average_value)
-        print("Реалистичное средневзвешенное:", realist_average_value)
-        print("Пессимистичное средневзвешенное:", pessimist_average_value)
+        print("— Оптимистичное средневзвешенное:", optimist_average_value)
+        print("— Реалистичное средневзвешенное:", realist_average_value)
+        print("— Пессимистичное средневзвешенное:", pessimist_average_value)
         print("Ожидаемое время проекта:", round (expected_time,1))
 
 else: 
     print ("Ошибка! Введите число")   
-    
-        
     
