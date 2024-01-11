@@ -1,0 +1,65 @@
+import networkx as nx
+import matplotlib.pyplot as plt
+
+# Задачи и их продолжительность
+tasks = {
+    'планирование': 8,
+    'ресурсы': 5,
+    'аналитика': 10,
+    'дизайн': 3,
+    'разработка': 4,
+    'бюджет': 2,
+}
+
+# Зависимости
+dependencies = {
+    'планирование': ['ресурсы', 'дизайн'],
+    'ресурсы': ['аналитика'],
+    'дизайн': ['аналитика'],
+    'разработка':['планирование', 'бюджет'],
+    'бюджет':['планирование', 'аналитика'],
+    
+   
+}
+
+
+G = nx.DiGraph()
+
+for task, duration in tasks.items():
+    G.add_node(task, duration=duration)
+
+
+for task, dependencies_list in dependencies.items():
+    for dependency in dependencies_list:
+        G.add_edge(dependency, task)
+
+earliest_start = {}
+for task in nx.topological_sort(G):
+    if task not in dependencies:
+        earliest_start[task] = 0
+    else:
+        max_dependency_finish_time = max([earliest_start[dependency] + tasks[dependency] for dependency in dependencies[task]])
+        earliest_start[task] = max_dependency_finish_time
+
+latest_finish = {}
+for task in reversed(list(nx.topological_sort(G))):
+    if task not in G.successors(task):
+        latest_finish[task] = earliest_start[task]
+    else:
+        min_successor_start_time = min([latest_finish[successor] - tasks[task] for successor in G.successors(task)])
+        latest_finish[task] = min_successor_start_time
+
+critical_path = []
+for task in G.nodes:
+    if earliest_start[task] == latest_finish[task]:
+        critical_path.append(task)
+
+pos = nx.spring_layout(G)
+nx.draw_networkx(G, pos, with_labels=True, node_color='lightblue')
+nx.draw_networkx_edge_labels(G, pos, edge_labels=nx.get_edge_attributes(G, 'duration'))
+plt.title('Сетевая модель проекта')
+plt.show()
+
+print("Ранние события:", earliest_start)
+print("Поздние события:", latest_finish)
+print("Критический путь:", critical_path)
