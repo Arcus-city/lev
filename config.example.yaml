@@ -1,0 +1,84 @@
+gateway:
+  name: "industrial-gateway-01"
+  log_level: "INFO"
+  data_dir: "./data"
+
+https:
+  url: "https://example.local/api/v1/measurements"
+  token_env: "GATEWAY_API_TOKEN"
+  verify_ssl: true
+  ca_file: null
+  timeout_seconds: 10
+  batch_size: 100
+  max_spool_files: 10000
+  retry_attempts: 3
+  retry_base_seconds: 1
+
+sources:
+
+  - name: "PLC-01"
+    protocol: "modbus"
+    enabled: true
+    host: "192.168.1.10"
+    port: 502
+    device_id: 1
+    poll_interval: 1.0
+
+    points:
+      - name: "temperature"
+        type: "holding_registers"
+        address: 100
+        count: 2
+        datatype: "float32"
+        unit: "degC"
+
+      - name: "pressure"
+        type: "holding_registers"
+        address: 102
+        count: 2
+        datatype: "float32"
+        unit: "bar"
+
+      - name: "run"
+        type: "coils"
+        address: 0
+        count: 1
+        datatype: "bool"
+        unit: null
+
+  - name: "BMS-01"
+    protocol: "bacnet"
+    enabled: false
+    local_ip: "192.168.1.50/24"
+    port: 47808
+    poll_interval: 2.0
+
+    points:
+      - name: "room_temperature"
+        address: "192.168.1.20:47808"
+        object_type: "analogInput"
+        instance: 1
+        property: "presentValue"
+        unit: "degC"
+
+  - name: "SCADA-01"
+    protocol: "opcua"
+    enabled: false
+    url: "opc.tcp://192.168.1.30:4840"
+    poll_interval: 1.0
+    username: null
+    password_env: null
+
+    points:
+      - name: "motor_speed"
+        node_id: "ns=2;s=Motor.Speed"
+        unit: "rpm"
+
+  - name: "AUTO-EXAMPLE"
+    protocol: "auto"
+    enabled: false
+    host: "192.168.1.10"
+    port: 502
+    device_id: 1
+    poll_interval: 1.0
+    points: []
