@@ -1,0 +1,117 @@
+import argparse
+import asyncio
+import logging
+import os
+import signal
+from pathlib import Path
+
+import yaml
+
+from core.models import GatewayConfig
+from core.normalizer import normalize
+from core.detector import detect_protocol
+from protocols.modbus import ModbusAdapter
+from protocols.bacnet import BacnetAdapter
+from protocols.opcua import OpcUaAdapter
+from transport.https import HTTPSPublisher
+
+LOG = logging.getLogger("gateway")
+
+
+def load_config(path: str) -> GatewayConfig:
+    with open(path, "r", encoding="utf-8") as f:
+        return GatewayConfig.from_dict(yaml.safe_load(f))
+
+
+def make_adapter(source):
+    protocol = source.protocol
+    if protocol == "auto":
+        protocol = detect_protocol(source)
+
+    if protocol == "modbus":
+        return ModbusAdapter(source)
+    if protocol == "bacnet":
+        return BacnetAdapter(source)
+    if protocol == "opcua":
+        return OpcUaAdapter(source)
+
+    raise ValueError(f"Unsupported protocol: {protocol}")
+
+
+async def run_source(source, publisher, stop_event):
+    adapter = make_adapter(source)
+    LOG.info("Starting source=%s protocol=%s", source.name, adapter.protocol)
+
+    while not stop_event.is_set():
+        try:
+            measurements = await adapter.poll()
+            if measurements:
+                message = normalize(
+                    source_name=source.name,
+                    protocol=adapter.protocol,
+                    measurements=measurements,
+                )
+                await publisher.publish(message)
+        except asyncio.CancelledError:
+            raise
+        except Exception:
+            LOG.exception("Source %s polling error", source.name)
+
+        try:
+            await asyncio.wait_for(
+                stop_event.wait(),
+                timeout=source.poll_interval,
+            )
+        except asyncio.TimeoutError:
+            pass
+
+    await adapter.close()
+
+
+async def async_main(config_path):
+    config = load_config(config_path)
+
+    logging.basicConfig(
+        level=getattr(logging, config.gateway.log_level.upper(), logging.INFO),
+        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    )
+
+    stop_event = asyncio.Event()
+
+    loop = asyncio.get_running_loop()
+    for sig in (signal.SIGINT, signal.SIGTERM):
+        try:
+            loop.add_signal_handler(sig, stop_event.set)
+        except NotImplementedError:
+            pass
+
+    publisher = HTTPSPublisher(config.https, config.gateway.data_dir)
+    await publisher.start()
+
+    tasks = [
+        asyncio.create_task(run_source(s, publisher, stop_event), name=s.name)
+        for s in config.sources
+        if s.enabled
+    ]
+
+    if not tasks:
+        LOG.warning("No enabled sources")
+
+    try:
+        await stop_event.wait()
+    finally:
+        for task in tasks:
+            task.cancel()
+        await asyncio.gather(*tasks, return_exceptions=True)
+        await publisher.close()
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config", default="config.yaml")
+    args = parser.parse_args()
+    asyncio.run(async_main(args.config))
+
+
+if __name__ == "__main__":
+    main()
