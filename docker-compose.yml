@@ -1,0 +1,22 @@
+services:
+  industrial-gateway:
+    build: .
+    container_name: industrial-gateway
+    restart: unless-stopped
+
+    # Recommended for BACnet/IP broadcast in a dedicated OT host.
+    # Remove this and configure UDP/networking manually if required.
+    network_mode: host
+
+    environment:
+      GATEWAY_API_TOKEN: "${GATEWAY_API_TOKEN}"
+
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - ./data:/app/data
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
